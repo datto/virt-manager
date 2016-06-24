@@ -75,6 +75,7 @@ class vmmGraphicsDetails(vmmGObjectUI):
         graphics_model.clear()
         graphics_model.append(["spice", _("Spice server")])
         graphics_model.append(["vnc", _("VNC server")])
+        graphics_model.append(["mux", _("RDPMux server")])
 
         self.widget("graphics-address").set_model(Gtk.ListStore(str, str))
         uiutil.init_combo_text_column(self.widget("graphics-address"), 1)
@@ -170,6 +171,7 @@ class vmmGraphicsDetails(vmmGObjectUI):
         is_vnc = (gtype == "vnc")
         is_sdl = (gtype == "sdl")
         is_spice = (gtype == "spice")
+        is_rdpmux = (gtype == "mux")
         title = (_("%(graphicstype)s Server") %
                   {"graphicstype" : gfx.pretty_type_simple(gtype)})
 
@@ -188,6 +190,10 @@ class vmmGraphicsDetails(vmmGObjectUI):
 
         if is_spice:
             set_port("graphics-tlsport", gfx.tlsPort)
+
+        if is_rdpmux:
+            self.widget("dbus-object").set_text(gfx.dbus_obj or "")
+            self.widget("dbus-path").set_text(gfx.dbus_path or "")
 
         if is_sdl:
             title = _("Local SDL Window")
@@ -208,13 +214,14 @@ class vmmGraphicsDetails(vmmGObjectUI):
     def _show_rows_from_type(self):
         hide_all = ["graphics-xauth", "graphics-display", "graphics-address",
             "graphics-password-box", "graphics-keymap", "graphics-port-box",
-            "graphics-tlsport-box"]
+            "graphics-tlsport-box", "dbus-object", "dbus-path"]
 
         gtype = uiutil.get_list_selection(self.widget("graphics-type"))
         sdl_rows = ["graphics-xauth", "graphics-display"]
         vnc_rows = ["graphics-password-box", "graphics-address",
             "graphics-port-box", "graphics-keymap"]
         spice_rows = vnc_rows[:] + ["graphics-tlsport-box"]
+        rdpmux_rows = ["dbus-object", "dbus-path"]
 
         rows = []
         if gtype == "sdl":
@@ -223,6 +230,8 @@ class vmmGraphicsDetails(vmmGObjectUI):
             rows = vnc_rows
         elif gtype == "spice":
             rows = spice_rows
+        elif gtype == "mux":
+            rows = rdpmux_rows
 
         for row in hide_all:
             uiutil.set_grid_row_visible(self.widget(row), row in rows)

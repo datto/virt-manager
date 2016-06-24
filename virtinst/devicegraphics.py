@@ -54,7 +54,8 @@ class VirtualGraphics(VirtualDevice):
     TYPE_VNC = "vnc"
     TYPE_RDP = "rdp"
     TYPE_SPICE = "spice"
-    TYPES = [TYPE_VNC, TYPE_SDL, TYPE_RDP, TYPE_SPICE]
+    TYPE_RDPMUX = "mux"
+    TYPES = [TYPE_VNC, TYPE_SDL, TYPE_RDP, TYPE_SPICE, TYPE_RDPMUX]
 
     CHANNEL_TYPE_MAIN     = "main"
     CHANNEL_TYPE_DISPLAY  = "display"
@@ -99,6 +100,9 @@ class VirtualGraphics(VirtualDevice):
                       VirtualGraphics.TYPE_SDL,
                       VirtualGraphics.TYPE_RDP]):
             return str(gtype).upper()
+
+        if gtype == VirtualGraphics.TYPE_RDPMUX:
+            return "RDPMux"
 
         return str(gtype).capitalize()
 
@@ -213,6 +217,8 @@ class VirtualGraphics(VirtualDevice):
     socket = XMLProperty("./@socket")
     connected = XMLProperty("./@connected")
     defaultMode = XMLProperty("./@defaultMode")
+    dbus_obj = XMLProperty("./@dbusObj")
+    dbus_path = XMLProperty("./@dbusPath")
 
     listens = XMLChildProperty(_GraphicsListen)
     def remove_all_listens(self):
