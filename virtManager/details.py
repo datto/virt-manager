@@ -91,6 +91,9 @@ EDIT_GFX_ADDRESS,
 EDIT_GFX_TLSPORT,
 EDIT_GFX_PORT,
 
+EDIT_DBUS_OBJECT,
+EDIT_DBUS_PATH,
+
 EDIT_VIDEO_MODEL,
 
 EDIT_WATCHDOG_MODEL,
@@ -104,7 +107,7 @@ EDIT_FS,
 
 EDIT_HOSTDEV_ROMBAR,
 
-) = range(1, 45)
+) = range(1, 47)
 
 
 # Columns in hw list model
@@ -384,6 +387,10 @@ class vmmDetails(vmmGObjectUI):
             lambda *x: self.enable_apply(x, EDIT_GFX_KEYMAP))
         self.gfxdetails.connect("changed-password",
             lambda *x: self.enable_apply(x, EDIT_GFX_PASSWD))
+        self.gfxdetails.connect("changed-dbus-object",
+            lambda *x: self.enable_apply(x, EDIT_DBUS_OBJECT))
+        self.gfxdetails.connect("changed-dbus-path",
+            lambda *x: self.enable_apply(x, EDIT_DBUS_PATH))
 
         self.netlist = vmmNetworkList(self.conn, self.builder, self.topwin)
         self.widget("network-source-label-align").add(self.netlist.top_label)
@@ -2133,7 +2140,8 @@ class vmmDetails(vmmGObjectUI):
 
     def config_graphics_apply(self, devobj):
         (gtype, port,
-         tlsport, addr, passwd, keymap) = self.gfxdetails.get_values()
+         tlsport, addr, passwd, keymap,
+         dbus_obj, dbus_path) = self.gfxdetails.get_values()
 
         kwargs = {}
 
@@ -2149,6 +2157,10 @@ class vmmDetails(vmmGObjectUI):
             kwargs["tlsport"] = tlsport
         if self.edited(EDIT_GFX_TYPE):
             kwargs["gtype"] = gtype
+        if self.edited(EDIT_DBUS_OBJECT):
+            kwargs["dbus_obj"] = dbus_obj
+        if self.edited(EDIT_DBUS_PATH):
+            kwargs["dbus_path"] = dbus_path
 
         return vmmAddHardware.change_config_helper(self.vm.define_graphics,
                                           kwargs, self.vm, self.err,

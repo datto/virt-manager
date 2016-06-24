@@ -389,6 +389,7 @@
       <object class="GtkEntry" id="dbus-object">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
+        <signal name="changed" handler="on_dbus_object_changed" swapped="no"/>
       </object>
       <packing>
         <property name="left_attach">1</property>
@@ -399,6 +400,7 @@
       <object class="GtkEntry" id="dbus-path">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
+        <signal name="changed" handler="on_dbus_path_changed" swapped="no"/>
       </object>
       <packing>
         <property name="left_attach">1</property>

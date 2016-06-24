@@ -35,6 +35,8 @@ class vmmGraphicsDetails(vmmGObjectUI):
         "changed-type": (GObject.SignalFlags.RUN_FIRST, None, []),
         "changed-address": (GObject.SignalFlags.RUN_FIRST, None, []),
         "changed-keymap": (GObject.SignalFlags.RUN_FIRST, None, []),
+        "changed-dbus-object": (GObject.SignalFlags.RUN_FIRST, None, []),
+        "changed-dbus-path": (GObject.SignalFlags.RUN_FIRST, None, []),
     }
 
     def __init__(self, vm, builder, topwin):
@@ -54,6 +56,8 @@ class vmmGraphicsDetails(vmmGObjectUI):
             "on_graphics_tlsport_changed": lambda ignore: self.emit("changed-tlsport"),
             "on_graphics_port_changed": lambda ignore: self.emit("changed-port"),
             "on_graphics_keymap_changed": lambda ignore: self.emit("changed-keymap"),
+            "on_dbus_object_changed": lambda ignore: self.emit("changed-dbus-object"),
+            "on_dbus_path_changed": lambda ignore: self.emit("changed-dbus-path"),
         })
 
         self._init_ui()
@@ -144,7 +148,10 @@ class vmmGraphicsDetails(vmmGObjectUI):
         if not self.widget("graphics-password-chk").get_active():
             passwd = None
 
-        return gtype, port, tlsport, addr, passwd, keymap
+        dbus_obj = self.widget("dbus-object").get_text()
+        dbus_path = self.widget("dbus-path").get_text()
+
+        return gtype, port, tlsport, addr, passwd, keymap, dbus_obj, dbus_path
 
     def set_dev(self, gfx):
         self.reset_state()
